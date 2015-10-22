@@ -1,13 +1,14 @@
 require 'active_support/core_ext/module/aliasing'
-require 'action_view/vendor/html-scanner'
+# require 'action_view/vendor/html-scanner'
 require 'action_dispatch/testing/assertions'
-require 'action_dispatch/testing/assertions/selector'
+# require 'action_dispatch/testing/assertions/selector'
 
 #--
 # Copyright (c) 2006 Assaf Arkin (http://labnotes.org)
 # Under MIT and/or CC By license.
 #++
 
+=begin
 ActionDispatch::Assertions::SelectorAssertions.module_eval do
   # Selects content from the RJS response.
   #
@@ -208,3 +209,4 @@ ActionDispatch::Assertions::SelectorAssertions.module_eval do
     unescaped
   end
 end
+=end
