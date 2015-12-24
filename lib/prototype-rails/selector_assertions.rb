@@ -94,10 +94,10 @@ module PrototypeRails
         id = args.shift
         insertion = "insert_#{position}".to_sym
         raise ArgumentError, "Unknown RJS insertion type #{position}" unless RJS_STATEMENTS[insertion]
-        statement = "(#{RJS_STATEMENTS[insertion]})"
+        statement = "#{RJS_STATEMENTS[insertion]}"
       else
         raise ArgumentError, "Unknown RJS statement type #{rjs_type}" unless RJS_STATEMENTS[rjs_type]
-        statement = "(#{RJS_STATEMENTS[rjs_type]})"
+        statement = "#{RJS_STATEMENTS[rjs_type]}"
       end
     else
       statement = "#{RJS_STATEMENTS[:any]}"
@@ -115,11 +115,8 @@ module PrototypeRails
       when :remove, :show, :hide, :toggle
         matches = @response.body.match(pattern)
       else
-        @response.body.gsub(pattern) do |match|
-          html = unescape_rjs(match)
-          matches ||= []
-          matches.concat HTML::Document.new(html).root.children.select { |n| n.tag? }
-          ""
+        matches = @response.body.scan(pattern).map do |match|
+          Nokogiri::HTML::DocumentFragment.parse(unescape_rjs(match[0]))
         end
     end
 
@@ -128,8 +125,8 @@ module PrototypeRails
       if block_given? && !([:remove, :show, :hide, :toggle].include? rjs_type)
         begin
           @selected ||= nil
-          in_scope, @selected = @selected, matches
-          yield matches
+          in_scope, @selected = @selected, matches[0]
+          yield matches[0]
         ensure
           @selected = in_scope
         end
